@@ -53,10 +53,10 @@ public final class Constants {
         public static final boolean kFrontRightTurningEncoderReversed = false;
         public static final boolean kBackRightTurningEncoderReversed = false;
 
-        public static final boolean kFrontLeftDriveEncoderReversed = false;
+        public static final boolean kFrontLeftDriveEncoderReversed = true;
         public static final boolean kBackLeftDriveEncoderReversed = false;
         public static final boolean kFrontRightDriveEncoderReversed = true;
-        public static final boolean kBackRightDriveEncoderReversed = true;
+        public static final boolean kBackRightDriveEncoderReversed = false;
 
         public static final int kFrontLeftDriveAbsoluteEncoderPort = 3;
         public static final int kBackLeftDriveAbsoluteEncoderPort = 9;
@@ -65,13 +65,13 @@ public final class Constants {
 
         public static final boolean kFrontLeftDriveAbsoluteEncoderReversed = true;
         public static final boolean kBackLeftDriveAbsoluteEncoderReversed = true;
-        public static final boolean kFrontRightDriveAbsoluteEncoderReversed = false;
-        public static final boolean kBackRightDriveAbsoluteEncoderReversed = false;
+        public static final boolean kFrontRightDriveAbsoluteEncoderReversed = true;
+        public static final boolean kBackRightDriveAbsoluteEncoderReversed = true;
 
-        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -(-4.666360); //offset in radians
+        public static final double kFrontLeftDriveAbsoluteEncoderOffsetRad = -(-1.524768); //offset in radians
         public static final double kBackLeftDriveAbsoluteEncoderOffsetRad = -(-0.510815); //offset in radians
-        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -(-0.542895-6.283184); //offset in radians
-        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -(0.584325-6.283184); //offset in radians
+        public static final double kFrontRightDriveAbsoluteEncoderOffsetRad = -(-0.542895); //offset in radians
+        public static final double kBackRightDriveAbsoluteEncoderOffsetRad = -(-2.258015); //offset in radians
 
         public static final double kPhysicalMaxSpeedMetersPerSecond = 5;
         public static final double kPhysicalMaxAngularSpeedRadiansPerSecond = 2 * 2 * Math.PI;
