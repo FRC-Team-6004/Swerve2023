@@ -6,6 +6,7 @@ import com.kauailabs.navx.frc.AHRS;
 import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 
 public class SwerveSubsystem extends SubsystemBase {
@@ -58,16 +60,16 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
     
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
-    public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
-        new Translation2d(DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2),
-        new Translation2d(DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2),
-        new Translation2d(-DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2),
-        new Translation2d(-DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2));
+
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics, gyro.getRotation2d(),
         getSwerveModulePosition(),
         new Pose2d(5.0, 13.5, new Rotation2d()));
 
+    private final PIDController yController = new PIDController(AutoConstants.kPYController, 0.0, 0.0);
+    private final PIDController xController = new PIDController(AutoConstants.kPXController, 0.0, 0.0);
+    private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController,
+        0.0, 0.0, AutoConstants.kThetaControllerConstraints);
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -97,6 +99,18 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public void resetOdometry(Pose2d pose) {
         odometer.resetPosition(getRotation2d(),getSwerveModulePosition(),pose);
+    }
+
+    public PIDController getxController() {
+        return xController;
+    }
+
+    public PIDController getyController() {
+        return yController;
+    }
+
+    public ProfiledPIDController getThetaController() {
+        return thetaController;
     }
 
     @Override

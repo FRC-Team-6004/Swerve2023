@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utils.AutoBuilder;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,18 +19,30 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
   private RobotContainer m_robotContainer;
+  private static SendableChooser<AutoModes> autoChooser;
+  private AutoModes previousSelectedAuto;
+  private AutoBuilder autoBuilder;
 
-  /**
-   * This function is run when the robot is first started up and should be used for any
-   * initialization code.
-   */
+  public enum AutoModes {
+    AUTO1
+  }
+  
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("AUTO1", AutoModes.AUTO1);
+    autoChooser.addOption("AUTO1", AutoModes.AUTO1);
+
+    SmartDashboard.putData("Auto Chooser", autoChooser);
+    previousSelectedAuto = autoChooser.getSelected();
+
+    autoBuilder = new AutoBuilder();
+    autoBuilder.setRobotContainer(m_robotContainer);
+    autoBuilder.setAutoMode(autoChooser.getSelected());
+    
   }
 
   /**
@@ -56,11 +71,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    m_autonomousCommand = autoBuilder.build();
 
-    // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+        m_autonomousCommand.schedule();
     }
   }
 
