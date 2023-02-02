@@ -92,7 +92,7 @@ public class SwerveJoystickCommand extends CommandBase {
         }   
         
         if(resetDirection.get()) {
-            swerveSubsystem.zeroHeading();   
+            swerveSubsystem.zeroHeading();
         }
 
         // 4. Construct desired chassis speeds

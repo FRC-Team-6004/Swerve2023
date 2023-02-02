@@ -8,6 +8,7 @@ import org.photonvision.PhotonCamera;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -57,6 +58,11 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
     
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    public SwerveDriveKinematics kinematics = new SwerveDriveKinematics(
+        new Translation2d(DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2),
+        new Translation2d(DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2),
+        new Translation2d(-DriveConstants.kWheelBase / 2, -DriveConstants.kTrackWidth / 2),
+        new Translation2d(-DriveConstants.kWheelBase / 2, DriveConstants.kTrackWidth / 2));
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics, gyro.getRotation2d(),
         getSwerveModulePosition(),

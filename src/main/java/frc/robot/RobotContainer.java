@@ -37,7 +37,7 @@ public class RobotContainer {
 
   private static final int MathPI = 0;
 
-  private final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  public SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
 
   private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
 
@@ -55,7 +55,7 @@ public class RobotContainer {
   }
 
   private void configureButtonBindings() {
-    new JoystickButton(driverController, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
+    //new JoystickButton(driverController, 2).whenPressed(() -> swerveSubsystem.zeroHeading());
   }
 
   public Command getAutonomousCommand() {
@@ -96,9 +96,9 @@ public class RobotContainer {
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
-          new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
-          swerveControllerCommand,
-          new InstantCommand(() -> swerveSubsystem.stopModules())
+          //new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+          swerveControllerCommand
+          //new InstantCommand(() -> swerveSubsystem.stopModules())
     );
 
   }
