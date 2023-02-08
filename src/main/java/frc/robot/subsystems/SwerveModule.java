@@ -125,4 +125,14 @@ public class SwerveModule {
         driveMotor.set(ControlMode.PercentOutput,0);
         turningMotor.set(ControlMode.PercentOutput,0);
     }
+
+    public void brake(boolean doBrake){
+        if(doBrake){
+            driveMotor.setNeutralMode(NeutralMode.Brake);
+        }
+        else{
+            driveMotor.setNeutralMode(NeutralMode.Coast);
+        }
+        
+    }
 }

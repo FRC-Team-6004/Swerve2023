@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ScheduleCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import frc.robot.Constants.AutoConstants;
@@ -18,7 +19,7 @@ import java.util.List;
 public class AutoPath {
     private final SwerveSubsystem swerveSubsystem;
     private PathPlannerTrajectory trajectory;
-    private SwerveControllerCommand swerveControllerCommand;
+    private PPSwerveControllerCommand swerveControllerCommand;
     private double startVel = 0.0;
     private double endVel = 0.0;
     private double maxVel = AutoConstants.kMaxSpeedMetersPerSecond;
@@ -41,16 +42,15 @@ public class AutoPath {
     }
 
     private void generateAutoPathCommand() {
-        swerveControllerCommand = new SwerveControllerCommand(
+        swerveControllerCommand = new PPSwerveControllerCommand(
             trajectory, 
-            swerveSubsystem::getPose, 
+            swerveSubsystem::getPose,
             DriveConstants.kDriveKinematics, 
             swerveSubsystem.getxController(), 
             swerveSubsystem.getyController(), 
-            swerveSubsystem.getThetaController(), 
+            swerveSubsystem.getThetaController(),
             swerveSubsystem::setModuleStates,
-            swerveSubsystem
-            );
+            swerveSubsystem);
     }
 
     /**
@@ -58,9 +58,12 @@ public class AutoPath {
      * Use getAutoPath() instead
 
     */
-    public void runAutoPath() {
-        new ScheduleCommand(swerveControllerCommand.beforeStarting(
-            new InstantCommand(() -> swerveSubsystem.resetOdometry(getInitPose())))
+    public Command initializeCmd() {
+        return new ScheduleCommand(swerveControllerCommand.beforeStarting(
+            new ParallelCommandGroup(
+                new InstantCommand(() -> swerveSubsystem.resetOdometry(getInitPose())),
+                new InstantCommand(() -> swerveSubsystem.zeroHeading()))
+            )
         );
     }
 
@@ -73,6 +76,18 @@ public class AutoPath {
         return new InstantCommand(() -> swerveSubsystem.resetOdometry(getInitPose()));
     }
 
+    public Command zeroHeading() {
+        return new InstantCommand(() -> swerveSubsystem.zeroHeading());
+    }
+
+    public Command setBrake() {
+        return new InstantCommand(() -> swerveSubsystem.brake(true));
+    }
+
+    public Command setCoast() {
+        return new InstantCommand(() -> swerveSubsystem.brake(false));
+    }
+
     public Pose2d getInitPose() {
         return trajectory.getInitialPose();
     }
@@ -80,7 +95,7 @@ public class AutoPath {
     public Pose2d getEndPose() {
         return trajectory.getEndState().poseMeters;
     }
-
+    
     public PathPlannerTrajectory getTrajectory() {
         return trajectory;
     }

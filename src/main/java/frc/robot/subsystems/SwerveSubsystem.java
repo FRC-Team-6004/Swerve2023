@@ -18,6 +18,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -62,14 +63,13 @@ public class SwerveSubsystem extends SubsystemBase {
     private final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
-        DriveConstants.kDriveKinematics, gyro.getRotation2d(),
+        DriveConstants.kDriveKinematics, getRotation2d(),
         getSwerveModulePosition(),
-        new Pose2d(5.0, 13.5, new Rotation2d()));
+        new Pose2d(1, 3, new Rotation2d()));
 
     private final PIDController yController = new PIDController(AutoConstants.kPYController, 0.0, 0.0);
     private final PIDController xController = new PIDController(AutoConstants.kPXController, 0.0, 0.0);
-    private final ProfiledPIDController thetaController = new ProfiledPIDController(AutoConstants.kPThetaController,
-        0.0, 0.0, AutoConstants.kThetaControllerConstraints);
+    private final PIDController thetaController = new PIDController(AutoConstants.kPThetaController,0.0, 0.0);
 
     public SwerveSubsystem() {
         new Thread(() -> {
@@ -86,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
     }
 
     public double getHeading() {
-        return Math.IEEEremainder(gyro.getAngle(), 360);
+        return gyro.getAngle();
     }
 
     public Rotation2d getRotation2d() {
@@ -109,7 +109,7 @@ public class SwerveSubsystem extends SubsystemBase {
         return yController;
     }
 
-    public ProfiledPIDController getThetaController() {
+    public PIDController getThetaController() {
         return thetaController;
     }
 
@@ -142,7 +142,23 @@ public class SwerveSubsystem extends SubsystemBase {
             new SwerveModulePosition(backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurningPosition())),
             new SwerveModulePosition(backRight.getDrivePosition(), new Rotation2d(backRight.getTurningPosition())),
         };
+    }
+
+    public void brake(boolean doBrake){
+        if(doBrake){
+            frontLeft.brake(true);
+            frontRight.brake(true);
+            backLeft.brake(true);
+            backRight.brake(true);
+        }
+        else{
+            frontLeft.brake(false);
+            frontRight.brake(false);
+            backLeft.brake(false);
+            backRight.brake(false);
         }
     }
+    
+}
     
     
