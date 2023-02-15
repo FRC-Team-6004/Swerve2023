@@ -82,6 +82,37 @@ public final class Constants {
         public static final double kTeleDriveMaxAngularAccelerationUnitsPerSecond = 3;
     }
 
+    public static final class MechanismConstants {
+        public static final int kTelescopePort = 20;
+        public static final int kPivotPort = 21;
+        public static final int kPivotFollowPort = 22;
+
+        public static final int kTelescopeEncoderCPR = 2048; //count per revolution
+        public static final int kPivotEncoderCPR = 42; //counts per revolution
+
+        public static final double kReductionTelescope = 35;
+        public static final double kRotationsToFullExtentTelescope = 8;
+        public static final double kReductionPivot = 100*(56/18);
+
+        public static final double kPTelescope = 1;
+        public static final double kITelescope = 0;
+        public static final double kDTelescope = 0;
+        public static final double kFTelescope = 0;
+        public static final double kMinTelescope = -1;
+        public static final double kMaxTelescope = 1;
+        public static final int kTimeoutMsTelescope = 30;
+        public static final int kPIDLoopIdxTelescope = 0;
+        public static final int kSlotIdxTelescope = 0;
+
+        public static final double kPPivot = 1;
+        public static final double kIPivot = 0;
+        public static final double kDPivot = 0;
+        public static final double kMinPivot = -.05;
+        public static final double kMaxPivot = .05;
+        
+
+    }
+
     public static final class AutoConstants {
         public static final double kMaxSpeedMetersPerSecond = 0.5;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI*0.5;
