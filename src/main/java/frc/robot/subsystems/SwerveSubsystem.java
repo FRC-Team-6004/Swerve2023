@@ -117,7 +117,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         odometer.update(getRotation2d(), getSwerveModulePosition());
         SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+        SmartDashboard.putNumber("Robot Theta", getPose().getRotation().getDegrees());
+
     }
 
     public void stopModules() {
