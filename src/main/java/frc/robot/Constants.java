@@ -107,8 +107,8 @@ public final class Constants {
         public static final double kPPivot = 1;
         public static final double kIPivot = 0;
         public static final double kDPivot = 0;
-        public static final double kMinPivot = -.05;
-        public static final double kMaxPivot = .05;
+        public static final double kMinPivot = -.2;
+        public static final double kMaxPivot = .2;
         
 
     }
@@ -130,6 +130,7 @@ public final class Constants {
 
     public static final class OIConstants {
         public static final int kDriverControllerPort = 0;
+        public static final int kOperatorControllerPort = 1;
 
         public static final int kDriverYAxis = 1;
         public static final int kDriverXAxis = 0;
@@ -137,6 +138,24 @@ public final class Constants {
         public static final int kDriverFieldOrientedButtonIdx = 6;
         public static final int kAlignWithTargetButton = 5;
         public static final int kResetDirectionButton = 4;
+
+        public static final int kRotate0Button = 3;
+        public static final int kRotate180Button = 2;
+        public static final int kExtendFullButton = 4;
+        public static final int kRetractButton = 1;
+        public static final int kToggleGrabButton = 10;
+        public static final int kReverseGrabButton = 6;
+        public static final int kForwardGrabButton = 5;
+
+        public static final int kManuelPivotAxis = 1;
+        public static final int kManuelTelescopeAxis = 5;
+
+
+
+
+
+
+
 
         public static final double kDeadband = 0.05;
     }

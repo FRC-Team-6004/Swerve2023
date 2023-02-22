@@ -13,13 +13,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class SwerveJoystickCommand extends CommandBase {
 
     private final SwerveSubsystem swerveSubsystem;
+    private final ArmSubsystem armSubsystem;
+
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Boolean> fieldOrientedFunction, alignFunction, resetDirection;
+    private final Supplier<Integer> manuelPivotPOV, manuelTelescopePOV;
+    private final Supplier<Boolean> fieldOrientedFunction, alignFunction, resetDirection, rotate0, rotate180, extendFull, 
+    retract, toggleGrab, reverseGrab, forwardGrab;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
     public final double cameraHeight = Units.inchesToMeters(5);// replace number with height of camera on robot
@@ -37,20 +42,42 @@ public class SwerveJoystickCommand extends CommandBase {
     PIDController turnController = new PIDController(angularP, 0, angularD);
 
 
-    public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem,
+    public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, ArmSubsystem armSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> alignButton, Supplier<Boolean> resetDirectionButton) {
+            Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> alignButton, Supplier<Boolean> resetDirectionButton,
+
+            Supplier<Boolean> rotate0Button, Supplier<Boolean> rotate180Button,
+            Supplier<Boolean> retractButton,Supplier<Boolean> extendFullButton, 
+            Supplier<Boolean> toggleGrabButton, Supplier<Boolean> reverseGrabButton, 
+            Supplier<Boolean> forwardGrabButton, Supplier<Integer> manuelPivotPOV,
+            Supplier<Integer> manuelTelescopePOV) {
         this.swerveSubsystem = swerveSubsystem;
+        this.armSubsystem = armSubsystem;
+
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
         this.fieldOrientedFunction = fieldOrientedFunction;
         this.alignFunction = alignButton;
         this.resetDirection = resetDirectionButton;
+
+        this.rotate0 = rotate0Button;
+        this.rotate180 = rotate180Button;
+        this.extendFull = extendFullButton;
+        this.retract = retractButton;
+        this.toggleGrab = toggleGrabButton;
+        this.reverseGrab = reverseGrabButton;
+        this.forwardGrab = forwardGrabButton;
+
+        this.manuelPivotPOV = manuelPivotPOV;
+        this.manuelTelescopePOV = manuelPivotPOV;
+
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.turningLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAngularAccelerationUnitsPerSecond);
         addRequirements(swerveSubsystem);
+        addRequirements(armSubsystem);
+
     }
 
     @Override
@@ -59,6 +86,8 @@ public class SwerveJoystickCommand extends CommandBase {
 
     @Override
     public void execute() {
+        //SWERVE EXECUTE
+
         // 1. Get real-time joystick inputs
         double xSpeed = xSpdFunction.get();
         double ySpeed = ySpdFunction.get();
@@ -98,7 +127,7 @@ public class SwerveJoystickCommand extends CommandBase {
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
         
-        if (fieldOrientedFunction.get()) {
+        if(fieldOrientedFunction.get()) {
             // Relative to field
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
@@ -112,6 +141,59 @@ public class SwerveJoystickCommand extends CommandBase {
 
         // 6. Output each module states to wheels
         swerveSubsystem.setModuleStates(moduleStates);
+
+        //ARM EXECUTE
+        if(rotate0.get()) {
+            armSubsystem.setPivotPosition(0);
+            //armSubsystem.manuelPivot(.3);
+        }
+        else if(rotate180.get()) {
+            armSubsystem.setPivotPosition(180);
+            //armSubsystem.manuelPivot(-.3);
+        }
+        else{
+            armSubsystem.pivotOff();
+        }
+
+        if(extendFull.get()) {
+            armSubsystem.setTelescopePosition(1);
+            //armSubsystem.manuelTelescope(.3);
+        }
+        else if(retract.get()) {
+            armSubsystem.setTelescopePosition(-1);
+            //armSubsystem.manuelTelescope(-.3);
+        }
+        else {
+            armSubsystem.telescopeOff();
+        }
+        if(toggleGrab.get()) {
+            armSubsystem.toggleGrab();
+        }
+        if(reverseGrab.get()) {
+            armSubsystem.setGrab(true);
+        }
+        if(forwardGrab.get()) {
+            armSubsystem.setGrab(false);
+        }
+        if(manuelPivotPOV.get()==90){
+            armSubsystem.manuelPivot(manuelPivotPOV.get()*.15);
+        }
+        else if(manuelPivotPOV.get()==270){
+            armSubsystem.manuelPivot(manuelPivotPOV.get()*-.15);
+        }
+        else{
+            armSubsystem.pivotOff();
+        }
+
+        if(manuelTelescopePOV.get()==0){
+            armSubsystem.manuelTelescope(manuelTelescopePOV.get()*.3);
+        }
+        else if(manuelTelescopePOV.get()==180){
+            armSubsystem.manuelTelescope(manuelTelescopePOV.get()*-.3);
+        }
+        else {
+            armSubsystem.telescopeOff();
+        }
     }
 
     @Override

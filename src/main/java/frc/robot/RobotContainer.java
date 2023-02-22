@@ -14,12 +14,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Joystick;
 //import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.SwerveJoystickCommand;
+import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -38,18 +40,32 @@ public class RobotContainer {
   private static final int MathPI = 0;
 
   public SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+  public ArmSubsystem armSubsystem = new ArmSubsystem();
 
   private final XboxController driverController = new XboxController(OIConstants.kDriverControllerPort);
+  private final XboxController operatorController = new XboxController(OIConstants.kOperatorControllerPort);
 
   public RobotContainer() {
     swerveSubsystem.setDefaultCommand(new SwerveJoystickCommand(
         swerveSubsystem,
+        armSubsystem,
         () -> -driverController.getRawAxis(OIConstants.kDriverYAxis),
         () -> driverController.getRawAxis(OIConstants.kDriverXAxis),
         () -> driverController.getRawAxis(OIConstants.kDriverRotAxis),
         () -> !driverController.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx),
         () -> driverController.getRawButton(OIConstants.kAlignWithTargetButton),
-        () -> driverController.getRawButton(OIConstants.kResetDirectionButton)));
+        () -> driverController.getRawButton(OIConstants.kResetDirectionButton),
+
+        () -> operatorController.getRawButton(OIConstants.kRotate0Button),
+        () -> operatorController.getRawButton(OIConstants.kRotate180Button),
+        () -> operatorController.getRawButton(OIConstants.kExtendFullButton),
+        () -> operatorController.getRawButton(OIConstants.kRetractButton),
+        () -> operatorController.getRawButton(OIConstants.kToggleGrabButton),
+        () -> operatorController.getRawButton(OIConstants.kReverseGrabButton),
+        () -> operatorController.getRawButton(OIConstants.kForwardGrabButton),
+        () -> operatorController.getPOV(),
+        () -> operatorController.getPOV()
+        ));
 
     configureButtonBindings();
   }
