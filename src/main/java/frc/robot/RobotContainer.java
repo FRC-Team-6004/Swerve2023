@@ -63,8 +63,7 @@ public class RobotContainer {
         () -> operatorController.getRawButton(OIConstants.kToggleGrabButton),
         () -> operatorController.getRawButton(OIConstants.kReverseGrabButton),
         () -> operatorController.getRawButton(OIConstants.kForwardGrabButton),
-        () -> operatorController.getPOV(),
-        () -> operatorController.getPOV()
+        () -> operatorController.getRawButton(OIConstants.kManuelButton)
         ));
 
     configureButtonBindings();

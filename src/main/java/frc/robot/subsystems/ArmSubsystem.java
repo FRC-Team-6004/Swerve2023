@@ -38,12 +38,9 @@ public class ArmSubsystem extends SubsystemBase {
 
   private SparkMaxPIDController pivotPidController;
 
-  private Boolean manuelMode;
-
   // functions
 
   public ArmSubsystem() {
-    manuelMode = false;
     telescope = new WPI_TalonFX(MechanismConstants.kTelescopePort);
     pivot = new CANSparkMax(MechanismConstants.kPivotPort, MotorType.kBrushless);
     pivotFollow = new CANSparkMax(MechanismConstants.kPivotFollowPort, MotorType.kBrushless);
@@ -78,7 +75,7 @@ public class ArmSubsystem extends SubsystemBase {
   }
   
   public void setPivotPosition(double angle) {
-    pivotPidController.setReference((angle/360)*MechanismConstants.kReductionPivot, CANSparkMax.ControlType.kPosition);
+    pivotPidController.setReference(-1*(angle/360)*MechanismConstants.kReductionPivot, CANSparkMax.ControlType.kPosition);
   }
 
   public void setTelescopePosition(double percent) { //percent should be 0 to 1
@@ -131,6 +128,7 @@ public class ArmSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
       SmartDashboard.putNumber("Telescope Pos", telescope.getSelectedSensorPosition());
+      SmartDashboard.putNumber("Pivot Pos", -(pivot.getEncoder().getPosition()/360)*MechanismConstants.kReductionPivot);
 
   }
 

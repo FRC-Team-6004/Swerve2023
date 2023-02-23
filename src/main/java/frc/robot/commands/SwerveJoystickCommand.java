@@ -22,9 +22,9 @@ public class SwerveJoystickCommand extends CommandBase {
     private final ArmSubsystem armSubsystem;
 
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
-    private final Supplier<Integer> manuelPivotPOV, manuelTelescopePOV;
+    //private final Supplier<Integer> manuelPivotPOV, manuelTelescopePOV;
     private final Supplier<Boolean> fieldOrientedFunction, alignFunction, resetDirection, rotate0, rotate180, extendFull, 
-    retract, toggleGrab, reverseGrab, forwardGrab;
+    retract, toggleGrab, reverseGrab, forwardGrab, manuel;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
     public final double cameraHeight = Units.inchesToMeters(5);// replace number with height of camera on robot
@@ -40,7 +40,7 @@ public class SwerveJoystickCommand extends CommandBase {
     final double angularP = 0.1;
     final double angularD = 0.005;
     PIDController turnController = new PIDController(angularP, 0, angularD);
-
+    boolean manuelMode = false;
 
     public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, ArmSubsystem armSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
@@ -49,8 +49,7 @@ public class SwerveJoystickCommand extends CommandBase {
             Supplier<Boolean> rotate0Button, Supplier<Boolean> rotate180Button,
             Supplier<Boolean> retractButton,Supplier<Boolean> extendFullButton, 
             Supplier<Boolean> toggleGrabButton, Supplier<Boolean> reverseGrabButton, 
-            Supplier<Boolean> forwardGrabButton, Supplier<Integer> manuelPivotPOV,
-            Supplier<Integer> manuelTelescopePOV) {
+            Supplier<Boolean> forwardGrabButton, Supplier<Boolean> manuelButton) {
         this.swerveSubsystem = swerveSubsystem;
         this.armSubsystem = armSubsystem;
 
@@ -69,8 +68,10 @@ public class SwerveJoystickCommand extends CommandBase {
         this.reverseGrab = reverseGrabButton;
         this.forwardGrab = forwardGrabButton;
 
-        this.manuelPivotPOV = manuelPivotPOV;
-        this.manuelTelescopePOV = manuelPivotPOV;
+        this.manuel = manuelButton;
+
+        //this.manuelPivotPOV = manuelPivotPOV;
+        //this.manuelTelescopePOV = manuelPivotPOV;
 
         this.xLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
         this.yLimiter = new SlewRateLimiter(DriveConstants.kTeleDriveMaxAccelerationUnitsPerSecond);
@@ -143,29 +144,51 @@ public class SwerveJoystickCommand extends CommandBase {
         swerveSubsystem.setModuleStates(moduleStates);
 
         //ARM EXECUTE
-        if(rotate0.get()) {
-            armSubsystem.setPivotPosition(0);
-            //armSubsystem.manuelPivot(.3);
-        }
-        else if(rotate180.get()) {
-            armSubsystem.setPivotPosition(180);
-            //armSubsystem.manuelPivot(-.3);
-        }
-        else{
-            armSubsystem.pivotOff();
-        }
+        if(!manuel.get()) {
+            if(rotate0.get()) {
+                armSubsystem.setPivotPosition(0);
+                //armSubsystem.manuelPivot(.3);
+            }
+            else if(rotate180.get()) {
+                armSubsystem.setPivotPosition(70); //angle to go to 
+                //armSubsystem.manuelPivot(-.3);
+            }
 
-        if(extendFull.get()) {
-            armSubsystem.setTelescopePosition(1);
-            //armSubsystem.manuelTelescope(.3);
-        }
-        else if(retract.get()) {
-            armSubsystem.setTelescopePosition(-1);
-            //armSubsystem.manuelTelescope(-.3);
+            if(extendFull.get()) {
+                armSubsystem.setTelescopePosition(0.01); //percentage (0 to 1)
+                //armSubsystem.manuelTelescope(.3);
+            }
+            else if(retract.get()) {
+                armSubsystem.setTelescopePosition(0);
+                //armSubsystem.manuelTelescope(-.3);
+            }
         }
         else {
-            armSubsystem.telescopeOff();
+            if(rotate0.get()) {
+                //armSubsystem.setPivotPosition(0);
+                armSubsystem.manuelPivot(.15);
+            }
+            else if(rotate180.get()) {
+                //armSubsystem.setPivotPosition(180);
+                armSubsystem.manuelPivot(-.15);
+            }
+            else {
+                armSubsystem.pivotOff();
+            }
+
+            if(extendFull.get()) {
+                //armSubsystem.setTelescopePosition(1);
+                armSubsystem.manuelTelescope(.75);
+            }
+            else if(retract.get()) {
+                //armSubsystem.setTelescopePosition(0);
+                armSubsystem.manuelTelescope(-.75);
+            }
+            else {
+                armSubsystem.telescopeOff();
+            }
         }
+
         if(toggleGrab.get()) {
             armSubsystem.toggleGrab();
         }
@@ -175,14 +198,13 @@ public class SwerveJoystickCommand extends CommandBase {
         if(forwardGrab.get()) {
             armSubsystem.setGrab(false);
         }
+
+        /*
         if(manuelPivotPOV.get()==90){
             armSubsystem.manuelPivot(manuelPivotPOV.get()*.15);
         }
         else if(manuelPivotPOV.get()==270){
             armSubsystem.manuelPivot(manuelPivotPOV.get()*-.15);
-        }
-        else{
-            armSubsystem.pivotOff();
         }
 
         if(manuelTelescopePOV.get()==0){
@@ -194,6 +216,7 @@ public class SwerveJoystickCommand extends CommandBase {
         else {
             armSubsystem.telescopeOff();
         }
+        */
     }
 
     @Override

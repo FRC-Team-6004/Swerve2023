@@ -146,16 +146,7 @@ public final class Constants {
         public static final int kToggleGrabButton = 10;
         public static final int kReverseGrabButton = 6;
         public static final int kForwardGrabButton = 5;
-
-        public static final int kManuelPivotAxis = 1;
-        public static final int kManuelTelescopeAxis = 5;
-
-
-
-
-
-
-
+        public static final int kManuelButton = 7;
 
         public static final double kDeadband = 0.05;
     }
