@@ -13,6 +13,7 @@ import com.ctre.phoenix.CustomParamConfiguration;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -64,6 +65,7 @@ public class ArmSubsystem extends SubsystemBase {
       );
 
     telescope.setSelectedSensorPosition(0);
+
     telescope.config_kF(MechanismConstants.kPIDLoopIdxTelescope, MechanismConstants.kFTelescope, MechanismConstants.kTimeoutMsTelescope);
     telescope.config_kP(MechanismConstants.kPIDLoopIdxTelescope, MechanismConstants.kPTelescope, MechanismConstants.kTimeoutMsTelescope);
     telescope.config_kI(MechanismConstants.kPIDLoopIdxTelescope, MechanismConstants.kITelescope, MechanismConstants.kTimeoutMsTelescope);

@@ -121,6 +121,8 @@ public final class Constants {
         public static final double kPXController = 0.75; //multiplier for controller PID control
         public static final double kPYController = 0.75; //multiplier for controller PID control
         public static final double kPThetaController = 1.75; //multiplier for controller PID control
+        public static final double kPBalanceController = 0.75; //multiplier for controller PID control
+        public static final double kRangeBalance = 0.3; //max speed for balancing
 
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = //
                 new TrapezoidProfile.Constraints(
