@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.server.PathPlannerServer;
+
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,16 +28,24 @@ public class Robot extends TimedRobot {
   private AutoBuilder autoBuilder;
 
   public enum AutoModes {
-    AUTO1
+    AUTO1,
+    BLUELEFT,
+    BLUEMIDDLE,
+    BLUERIGHT
   }
   
   @Override
   public void robotInit() {
+    PathPlannerServer.startServer(5811); //PathPlanner Server
+
     m_robotContainer = new RobotContainer();
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AUTO1", AutoModes.AUTO1);
     autoChooser.addOption("AUTO1", AutoModes.AUTO1);
+    autoChooser.addOption("BlueLeft", AutoModes.BLUELEFT);
+    autoChooser.addOption("BlueMiddle", AutoModes.BLUEMIDDLE);
+    autoChooser.addOption("BlueRight", AutoModes.BLUERIGHT);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     previousSelectedAuto = autoChooser.getSelected();
@@ -71,7 +82,8 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
-    m_autonomousCommand = autoBuilder.build();
+    //m_autonomousCommand = autoBuilder.build();
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
         m_autonomousCommand.schedule();

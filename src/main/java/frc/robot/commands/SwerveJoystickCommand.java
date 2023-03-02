@@ -144,13 +144,13 @@ public class SwerveJoystickCommand extends CommandBase {
         swerveSubsystem.setModuleStates(moduleStates);
 
         //ARM EXECUTE
-        if(!manuel.get()) {
+        if(manuel.get()) {
             if(rotate0.get()) {
                 armSubsystem.setPivotPosition(0);
                 //armSubsystem.manuelPivot(.3);
             }
             else if(rotate180.get()) {
-                armSubsystem.setPivotPosition(70); //angle to go to 
+                armSubsystem.setPivotPosition(45); //angle to go to 
                 //armSubsystem.manuelPivot(-.3);
             }
 

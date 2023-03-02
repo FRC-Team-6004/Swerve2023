@@ -1,5 +1,6 @@
 package frc.robot;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -8,6 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.SwerveModule;
 
 public final class Constants {
@@ -28,9 +30,9 @@ public final class Constants {
 
     public static final class DriveConstants {
 
-        public static final double kTrackWidth = 0.55; //meters //Units.inchesToMeters(21);
+        public static final double kTrackWidth = 0.58; //meters
         // Distance between right and left wheels
-        public static final double kWheelBase = 0.55;//meters //Units.inchesToMeters(25.5);
+        public static final double kWheelBase = 0.58; //meters
         // Distance between front and back wheels
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(kWheelBase / 2, -kTrackWidth / 2),
@@ -114,6 +116,9 @@ public final class Constants {
     }
 
     public static final class AutoConstants {
+
+        public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
+
         public static final double kMaxSpeedMetersPerSecond = 0.5;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI*0.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;

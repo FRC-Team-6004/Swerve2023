@@ -14,36 +14,37 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class AutoPath {
+public class AutoPaths {
     private final SwerveSubsystem swerveSubsystem;
-    private PathPlannerTrajectory trajectory;
+    private List<PathPlannerTrajectory> trajectory;
     private PPSwerveControllerCommand swerveControllerCommand;
     private double startVel = 0.0;
     private double endVel = 0.0;
     private double maxVel = AutoConstants.kMaxSpeedMetersPerSecond;
     private double maxAccel = AutoConstants.kMaxAccelerationMetersPerSecondSquared;
 
-    public AutoPath(SwerveSubsystem swerveSubsystem, String trajectoryFile) {
+    public AutoPaths(SwerveSubsystem swerveSubsystem, String trajectoryFile) {
         this.swerveSubsystem = swerveSubsystem;
-        this.trajectory = PathPlanner.loadPath(trajectoryFile, maxVel, maxAccel);
+        this.trajectory = PathPlanner.loadPathGroup(trajectoryFile, maxVel, maxAccel);
 
-        generateAutoPathCommand();
+        generateAutoPathCommand(0);
     }
 
-    public AutoPath(SwerveSubsystem swerveSubsystem, String trajectoryFile, double maxVel, double maxAccel) {
+    public AutoPaths(SwerveSubsystem swerveSubsystem, String trajectoryFile, double maxVel, double maxAccel) {
         this.swerveSubsystem = swerveSubsystem;
         this.maxVel = maxVel;
         this.maxAccel= maxAccel;
-        this.trajectory = PathPlanner.loadPath(trajectoryFile, maxVel, maxAccel);
+        this.trajectory = PathPlanner.loadPathGroup(trajectoryFile, maxVel, maxAccel);
 
-        generateAutoPathCommand();
+        generateAutoPathCommand(0);
     }
 
-    private void generateAutoPathCommand() {
+    private void generateAutoPathCommand(int idx) {
         swerveControllerCommand = new PPSwerveControllerCommand(
-            trajectory, 
+            trajectory.get(idx), 
             swerveSubsystem::getPose,
             DriveConstants.kDriveKinematics, 
             swerveSubsystem.getxController(), 
@@ -89,18 +90,18 @@ public class AutoPath {
     }
 
     public Pose2d getInitPose() {
-        return trajectory.getInitialPose();
+        return trajectory.get(0).getInitialPose();
     }
 
     public Pose2d getEndPose() {
-        return trajectory.getEndState().poseMeters;
+        return trajectory.get(trajectory.size()-1).getEndState().poseMeters;
     }
     
-    public PathPlannerTrajectory getTrajectory() {
-        return trajectory;
-    }
+    public PathPlannerTrajectory getTrajectory(int idx) {
+        return trajectory.get(idx);
+    }  
 
-    public double getPathDuration() {
-        return trajectory.getTotalTimeSeconds();
+    public double getPathDuration(int idx) {
+        return trajectory.get(idx).getTotalTimeSeconds();
     }
 }
