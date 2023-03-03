@@ -166,7 +166,7 @@ public class SwerveJoystickCommand extends CommandBase {
         else {
             if(rotate0.get()) {
                 //armSubsystem.setPivotPosition(0);
-                armSubsystem.manuelPivot(.15);
+                armSubsystem.manuelPivot(.3);
             }
             else if(rotate180.get()) {
                 //armSubsystem.setPivotPosition(180);

@@ -42,8 +42,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
 
-  private static final int MathPI = 0;
-
   public SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
   public ArmSubsystem armSubsystem = new ArmSubsystem();
 
@@ -88,11 +86,11 @@ public class RobotContainer {
 
     // 2. Generate trajectory
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(180)),
+            new Pose2d(0, 0, new Rotation2d(Math.PI)),
             List.of(
                     new Translation2d(0, 0),
-                    new Translation2d(1, 0)),
-            new Pose2d(1, 0, Rotation2d.fromDegrees(180)),
+                    new Translation2d(2, 0)),
+            new Pose2d(2, 0, new Rotation2d(0)),
             trajectoryConfig);
     SmartDashboard.putNumber("auto", trajectory.getTotalTimeSeconds());
     // 3. Define PID controllers for tracking trajectory
@@ -112,14 +110,16 @@ public class RobotContainer {
             thetaController,
             swerveSubsystem::setModuleStates,
             swerveSubsystem);
+    swerveSubsystem.resetOdometry(new Pose2d(0,0,new Rotation2d(Math.PI)));
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
-            new InstantCommand(() -> armSubsystem.setPivotPosition(-45)),
+            new InstantCommand(() -> armSubsystem.setPivotPosition(45)),
             new WaitCommand(2),
             new InstantCommand((() -> armSubsystem.setGrab(true))),
             new WaitCommand(2),
-            new InstantCommand(() -> swerveSubsystem.resetOdometry(trajectory.getInitialPose())),
+            
+            new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0,0,new Rotation2d(Math.PI)))),
             swerveControllerCommand,
             new InstantCommand(() -> swerveSubsystem.stopModules()));
 

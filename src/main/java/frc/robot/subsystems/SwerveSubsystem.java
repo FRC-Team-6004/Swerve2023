@@ -67,7 +67,7 @@ public class SwerveSubsystem extends SubsystemBase {
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics, getRotation2d(),
         getSwerveModulePosition(),
-        new Pose2d(1, 3, new Rotation2d()));
+        new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
 
     private final PIDController yController = new PIDController(AutoConstants.kPYController, 0.0, 0.0);
     private final PIDController xController = new PIDController(AutoConstants.kPXController, 0.0, 0.0);
