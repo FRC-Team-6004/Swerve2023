@@ -55,7 +55,7 @@ public class RobotContainer {
         () -> -driverController.getRawAxis(OIConstants.kDriverYAxis),
         () -> driverController.getRawAxis(OIConstants.kDriverXAxis),
         () -> driverController.getRawAxis(OIConstants.kDriverRotAxis),
-        () -> !driverController.getRawButton(OIConstants.kDriverFieldOrientedButtonIdx),
+        () -> driverController.getRawButton(OIConstants.kDriverBrakeButton),
         () -> driverController.getRawButton(OIConstants.kAlignWithTargetButton),
         () -> driverController.getRawButton(OIConstants.kResetDirectionButton),
 
@@ -83,16 +83,15 @@ public class RobotContainer {
             AutoConstants.kMaxSpeedMetersPerSecond,
             AutoConstants.kMaxAccelerationMetersPerSecondSquared)
                     .setKinematics(DriveConstants.kDriveKinematics);
-
+    Pose2d initialPose = new Pose2d(0, 0, new Rotation2d(Math.PI));
     // 2. Generate trajectory
     Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(Math.PI)),
+            initialPose,
             List.of(
                     new Translation2d(0, 0),
-                    new Translation2d(2, 0)),
-            new Pose2d(2, 0, new Rotation2d(0)),
+                    new Translation2d(1, 0)),
+            new Pose2d(2, 0, new Rotation2d(Math.PI)),
             trajectoryConfig);
-    SmartDashboard.putNumber("auto", trajectory.getTotalTimeSeconds());
     // 3. Define PID controllers for tracking trajectory
     PIDController xController = new PIDController(AutoConstants.kPXController, 0, 0);
     PIDController yController = new PIDController(AutoConstants.kPYController, 0, 0);
@@ -110,7 +109,7 @@ public class RobotContainer {
             thetaController,
             swerveSubsystem::setModuleStates,
             swerveSubsystem);
-    swerveSubsystem.resetOdometry(new Pose2d(0,0,new Rotation2d(Math.PI)));
+    swerveSubsystem.resetOdometry(initialPose);
 
     // 5. Add some init and wrap-up, and return everything
     return new SequentialCommandGroup(
