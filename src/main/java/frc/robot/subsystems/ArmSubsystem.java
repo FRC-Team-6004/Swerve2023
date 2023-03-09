@@ -6,14 +6,10 @@ package frc.robot.subsystems;
 
 //imports
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.MechanismConstants;
 
-import com.ctre.phoenix.CustomParamConfiguration;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -21,7 +17,6 @@ import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -83,8 +78,9 @@ public class ArmSubsystem extends SubsystemBase {
   public void setTelescopePosition(double percent) { //percent should be 0 to 1
       telescope.set(
         ControlMode.Position, 
-        (percent*(MechanismConstants.kRotationsToFullExtentTelescope*MechanismConstants.kReductionTelescope))*MechanismConstants.kTelescopeEncoderCPR
-        );
+        (percent*-300000)
+      );
+
       
   }
 
@@ -110,9 +106,32 @@ public class ArmSubsystem extends SubsystemBase {
   }
 
   public void manuelTelescope(double speed) {
-    telescope.set(ControlMode.PercentOutput, speed);
-    SmartDashboard.putNumber("Telescope Speed", speed);
-
+    /*
+    if(speed>0){
+      if(telescope.getSelectedSensorPosition()<0){
+        telescope.set(ControlMode.PercentOutput, speed);
+      }
+    }
+    else if(speed<0){
+      if(telescope.getSelectedSensorPosition()>-300000){
+        telescope.set(ControlMode.PercentOutput, speed);
+      }
+    }
+    else{
+      telescope.set(ControlMode.PercentOutput, 0);
+    }
+    */
+    
+    double result = 0;
+    if(-telescope.getSelectedSensorPosition()>1000){
+      if(speed>0){result = speed;}
+    }
+    if(-telescope.getSelectedSensorPosition()<300000){
+      if(speed<0){result = speed;}
+    }
+    
+    telescope.set(ControlMode.PercentOutput, result); //result or speed
+    SmartDashboard.putNumber("Telescope Speed", result); //result or speed
   }
 
   
@@ -124,12 +143,11 @@ public class ArmSubsystem extends SubsystemBase {
   public void telescopeOff() {
     telescope.set(ControlMode.PercentOutput, 0);
     SmartDashboard.putNumber("Telescope Speed", 0);
-
   }
 
   @Override
   public void periodic() {
-      SmartDashboard.putNumber("Telescope Pos", telescope.getSelectedSensorPosition());
+      SmartDashboard.putNumber("Telescope Pos", -telescope.getSelectedSensorPosition());
       SmartDashboard.putNumber("Pivot Pos", -(pivot.getEncoder().getPosition()/360)*MechanismConstants.kReductionPivot);
 
   }

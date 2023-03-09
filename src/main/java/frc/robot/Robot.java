@@ -7,7 +7,6 @@ package frc.robot;
 import com.pathplanner.lib.server.PathPlannerServer;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -24,7 +23,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer m_robotContainer;
   private static SendableChooser<AutoModes> autoChooser;
-  private AutoModes previousSelectedAuto;
+  //private AutoModes previousSelectedAuto;
   private AutoBuilder autoBuilder;
 
   public enum AutoModes {
@@ -48,7 +47,7 @@ public class Robot extends TimedRobot {
     autoChooser.addOption("BlueRight", AutoModes.BLUERIGHT);
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    previousSelectedAuto = autoChooser.getSelected();
+    //previousSelectedAuto = autoChooser.getSelected();
 
     autoBuilder = new AutoBuilder();
     autoBuilder.setRobotContainer(m_robotContainer);

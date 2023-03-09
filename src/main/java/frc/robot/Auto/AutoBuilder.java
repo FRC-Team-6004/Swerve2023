@@ -2,17 +2,11 @@ package frc.robot.Auto;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.AutoConstants;
 import frc.robot.Robot.AutoModes;
 import frc.robot.RobotContainer;
 import frc.robot.commands.Mechanisms.DrivetrainCommand;
-import frc.robot.commands.Mechanisms.GrabCommand;
-import frc.robot.subsystems.ArmSubsystem;
 
 public class AutoBuilder {
     private RobotContainer robotContainer;

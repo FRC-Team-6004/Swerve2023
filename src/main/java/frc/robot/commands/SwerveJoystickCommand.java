@@ -23,8 +23,8 @@ public class SwerveJoystickCommand extends CommandBase {
 
     private final Supplier<Double> xSpdFunction, ySpdFunction, turningSpdFunction;
     //private final Supplier<Integer> manuelPivotPOV, manuelTelescopePOV;
-    private final Supplier<Boolean> fieldOrientedFunction, alignFunction, resetDirection, rotate0, rotate180, extendFull, 
-    retract, toggleGrab, reverseGrab, forwardGrab, manuel;
+    private final Supplier<Boolean> brakeMode, alignFunction, resetDirection, rotate0, rotate180, extendFull, 
+    retract, toggleGrab, reverseGrab, forwardGrab, manuel, slowMode, autoEngage;
     private final SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
     public final double cameraHeight = Units.inchesToMeters(5);// replace number with height of camera on robot
@@ -44,19 +44,20 @@ public class SwerveJoystickCommand extends CommandBase {
 
     public SwerveJoystickCommand(SwerveSubsystem swerveSubsystem, ArmSubsystem armSubsystem,
             Supplier<Double> xSpdFunction, Supplier<Double> ySpdFunction, Supplier<Double> turningSpdFunction,
-            Supplier<Boolean> fieldOrientedFunction, Supplier<Boolean> alignButton, Supplier<Boolean> resetDirectionButton,
+            Supplier<Boolean> brakeMode, Supplier<Boolean> alignButton, Supplier<Boolean> resetDirectionButton,
 
             Supplier<Boolean> rotate0Button, Supplier<Boolean> rotate180Button,
             Supplier<Boolean> retractButton,Supplier<Boolean> extendFullButton, 
             Supplier<Boolean> toggleGrabButton, Supplier<Boolean> reverseGrabButton, 
-            Supplier<Boolean> forwardGrabButton, Supplier<Boolean> manuelButton) {
+            Supplier<Boolean> forwardGrabButton, Supplier<Boolean> manuelButton, 
+            Supplier<Boolean> slowModeButton, Supplier<Boolean> autoEngageButton) {
         this.swerveSubsystem = swerveSubsystem;
         this.armSubsystem = armSubsystem;
 
         this.xSpdFunction = xSpdFunction;
         this.ySpdFunction = ySpdFunction;
         this.turningSpdFunction = turningSpdFunction;
-        this.fieldOrientedFunction = fieldOrientedFunction;
+        this.brakeMode = brakeMode;
         this.alignFunction = alignButton;
         this.resetDirection = resetDirectionButton;
 
@@ -69,6 +70,10 @@ public class SwerveJoystickCommand extends CommandBase {
         this.forwardGrab = forwardGrabButton;
 
         this.manuel = manuelButton;
+
+        this.slowMode = slowModeButton;
+
+        this.autoEngage = autoEngageButton;
 
         //this.manuelPivotPOV = manuelPivotPOV;
         //this.manuelTelescopePOV = manuelPivotPOV;
@@ -128,20 +133,32 @@ public class SwerveJoystickCommand extends CommandBase {
         // 4. Construct desired chassis speeds
         ChassisSpeeds chassisSpeeds;
         
-        if(fieldOrientedFunction.get()) {
+        if(true){//brakeMode.get()) {
             // Relative to field
             chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
                     xSpeed, ySpeed, turningSpeed, swerveSubsystem.getRotation2d());
-        } else {
+        } /*else {
             // Relative to robot
             chassisSpeeds = new ChassisSpeeds(xSpeed, ySpeed, turningSpeed);
         }
+        */
+        if(brakeMode.get()){swerveSubsystem.brake(true);} else {swerveSubsystem.brake(false);}
+
+        if(slowMode.get()){chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond*0.5, chassisSpeeds.vyMetersPerSecond*0.5, chassisSpeeds.omegaRadiansPerSecond*0.5);}
 
         // 5. Convert chassis speeds to individual module states
-        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-        // 6. Output each module states to wheels
-        swerveSubsystem.setModuleStates(moduleStates);
+        if(!autoEngage.get()){
+            SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+            // 6. Output each module states to wheels
+            swerveSubsystem.setModuleStates(moduleStates);
+        }
+        else {
+            swerveSubsystem.balance();
+        }
+
+        
 
         //ARM EXECUTE
         if(manuel.get()) {
@@ -155,22 +172,22 @@ public class SwerveJoystickCommand extends CommandBase {
             }
 
             if(extendFull.get()) {
-                armSubsystem.setTelescopePosition(0.01); //percentage (0 to 1)
+                armSubsystem.setTelescopePosition(0.1); //percentage (0 to 1)
                 //armSubsystem.manuelTelescope(.3);
             }
             else if(retract.get()) {
-                armSubsystem.setTelescopePosition(0);
+                armSubsystem.setTelescopePosition(0.9);
                 //armSubsystem.manuelTelescope(-.3);
             }
         }
         else {
             if(rotate0.get()) {
                 //armSubsystem.setPivotPosition(0);
-                armSubsystem.manuelPivot(.3);
+                armSubsystem.manuelPivot(.35);
             }
             else if(rotate180.get()) {
                 //armSubsystem.setPivotPosition(180);
-                armSubsystem.manuelPivot(-.15);
+                armSubsystem.manuelPivot(-.3);
             }
             else {
                 armSubsystem.pivotOff();
@@ -178,11 +195,11 @@ public class SwerveJoystickCommand extends CommandBase {
 
             if(extendFull.get()) {
                 //armSubsystem.setTelescopePosition(1);
-                armSubsystem.manuelTelescope(.75);
+                armSubsystem.manuelTelescope(.5);
             }
             else if(retract.get()) {
                 //armSubsystem.setTelescopePosition(0);
-                armSubsystem.manuelTelescope(-.75);
+                armSubsystem.manuelTelescope(-.5);
             }
             else {
                 armSubsystem.telescopeOff();

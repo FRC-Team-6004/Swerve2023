@@ -3,24 +3,20 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-import org.photonvision.PhotonCamera;
+//import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.SPI;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -62,12 +58,12 @@ public class SwerveSubsystem extends SubsystemBase {
             DriveConstants.kBackRightDriveAbsoluteEncoderOffsetRad,
             DriveConstants.kBackRightDriveAbsoluteEncoderReversed);
     
-    private final AHRS gyro = new AHRS(SPI.Port.kMXP);
+    public final AHRS gyro = new AHRS(SPI.Port.kMXP);
 
     private final SwerveDriveOdometry odometer = new SwerveDriveOdometry(
         DriveConstants.kDriveKinematics, getRotation2d(),
         getSwerveModulePosition(),
-        new Pose2d(0, 0, Rotation2d.fromDegrees(180)));
+        new Pose2d(0, 0, new Rotation2d(Math.PI)));
 
     private final PIDController yController = new PIDController(AutoConstants.kPYController, 0.0, 0.0);
     private final PIDController xController = new PIDController(AutoConstants.kPXController, 0.0, 0.0);
@@ -122,7 +118,8 @@ public class SwerveSubsystem extends SubsystemBase {
     public void periodic() {
         odometer.update(getRotation2d(), getSwerveModulePosition());
         SmartDashboard.putNumber("Robot Heading", getHeading());
-        SmartDashboard.putNumber("Robot Theta", getPose().getRotation().getDegrees());
+        SmartDashboard.putString("Robot Location", getPose().getTranslation().toString());
+        SmartDashboard.putNumber("Robot Angle", gyro.getPitch());
 
     }
 
@@ -165,17 +162,30 @@ public class SwerveSubsystem extends SubsystemBase {
         }
     }
 
-    public void balance(double angle){
+    public void balance(){
         ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+        //double angle = gyro.get
+        if(Math.abs(gyro.getPitch())>10){
+            double output = MathUtil.clamp(balanceController.calculate(
+                gyro.getPitch(), 0),
+                -AutoConstants.kRangeBalance, 
+                AutoConstants.kRangeBalance
+                );
+            chassisSpeeds.vxMetersPerSecond = output;
+        }
+        else if(Math.abs(gyro.getPitch())>2.5){
+            double output = MathUtil.clamp(balanceController.calculate(
+                gyro.getPitch(), 0),
+                -AutoConstants.kRangeBalanceClose, 
+                AutoConstants.kRangeBalanceClose
+                );
+            chassisSpeeds.vxMetersPerSecond = output;
+        }
         
-        double output = MathUtil.clamp(balanceController.calculate(
-            angle, 0),
-            -AutoConstants.kRangeBalance, 
-            AutoConstants.kRangeBalance
-            );
+        else {
+            chassisSpeeds.vxMetersPerSecond = 0;
+        }
         
-        chassisSpeeds.vxMetersPerSecond = output;
-
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
         setModuleStates(moduleStates);
     }
