@@ -4,11 +4,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.ArmSubsystem;
 
 public class TelescopeCommand extends CommandBase {
-    double pos;
+    double spd;
     ArmSubsystem subsystem;
-    public TelescopeCommand(ArmSubsystem armSubsystem, double position){
+    boolean finish = false;
+    public TelescopeCommand(ArmSubsystem armSubsystem, double speed){
         subsystem = armSubsystem;
-        pos = position;
+        spd = speed;
     }
 
     @Override
@@ -18,7 +19,18 @@ public class TelescopeCommand extends CommandBase {
 
     @Override
     public void execute() {
-        subsystem.setTelescopePosition(pos);
+        subsystem.manuelTelescope(spd);
+
+        if(spd<0){
+            if(-subsystem.telescope.getSelectedSensorPosition()>300000){
+                finish = true;
+            }
+        }
+        else{
+            if(-subsystem.telescope.getSelectedSensorPosition()<1000){
+                finish = true;
+            }
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -30,6 +42,7 @@ public class TelescopeCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+
+        return (finish);
     }
 }

@@ -115,7 +115,7 @@ public final class Constants {
 
         public static final HashMap<String, Command> AUTO_EVENT_MAP = new HashMap<>();
 
-        public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond/2;
+        public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 0.5;
         public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;

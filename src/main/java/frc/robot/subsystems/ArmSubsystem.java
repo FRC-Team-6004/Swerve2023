@@ -24,13 +24,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class ArmSubsystem extends SubsystemBase {
 
-  private TalonFX telescope;
+  public TalonFX telescope;
 
-  private CANSparkMax pivot;
+  public CANSparkMax pivot;
   private CANSparkMax pivotFollow;
 
-  private DoubleSolenoid solenoid1;
-  private DoubleSolenoid solenoid2;
+  public DoubleSolenoid solenoid1;
+  public DoubleSolenoid solenoid2;
 
   private SparkMaxPIDController pivotPidController;
 

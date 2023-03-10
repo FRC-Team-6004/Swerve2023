@@ -77,8 +77,10 @@ public class RobotContainer {
                 // new JoystickButton(driverController, 2).whenPressed(() ->
                 // swerveSubsystem.zeroHeading());
         }
-
+        
+        /*
         public Command getAutonomousCommand() {
+                
                 // 1. Create trajectory settings
                 swerveSubsystem.brake(true);
                 TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
@@ -116,18 +118,24 @@ public class RobotContainer {
                 SmartDashboard.putNumber("auto", 0);
                 return new SequentialCommandGroup(
                         
-                        //new InstantCommand(() -> armSubsystem.setPivotPosition(-45)),
-                        ////new InstantCommand(() -> armSubsystem.setTelescopePosition(0.9)),
-                        //new WaitCommand(2.5),
-                        //new InstantCommand((() -> armSubsystem.setGrab(true))),
-                        //new WaitCommand(1),
-                        //new InstantCommand(() -> armSubsystem.setPivotPosition(0)),
-                        ////new InstantCommand(() -> armSubsystem.setTelescopePosition(0.1)),
-                        //new WaitCommand(2.5),
+                        new InstantCommand(() -> armSubsystem.setPivotPosition(-45)),
+                        new WaitCommand(2.5),
+                        new InstantCommand(() -> armSubsystem.manuelTelescope(.75)),
+                        //new InstantCommand(() -> armSubsystem.setTelescopePosition(0.9)),
+                        new WaitCommand(2.5),
+                        new InstantCommand((() -> armSubsystem.setGrab(true))),
+                        new WaitCommand(1),
+                        new InstantCommand(() -> armSubsystem.setPivotPosition(0)),
+                        //new InstantCommand(() -> armSubsystem.setTelescopePosition(0.1)),
+                        new WaitCommand(2.5),
+                        new InstantCommand(() -> armSubsystem.manuelTelescope(-.75)),
+                        new WaitCommand(2),
                         new InstantCommand(() -> swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
                         swerveControllerCommand,
                         new InstantCommand(() -> swerveSubsystem.stopModules()));
                                 
 
+         
         }
+        */
 }
