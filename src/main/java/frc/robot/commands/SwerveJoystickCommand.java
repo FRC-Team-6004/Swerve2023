@@ -11,8 +11,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.Mechanisms.DrivetrainTimerCommand;
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
 
@@ -144,7 +146,9 @@ public class SwerveJoystickCommand extends CommandBase {
         */
         if(brakeMode.get()){swerveSubsystem.brake(true);} else {swerveSubsystem.brake(false);}
 
-        if(slowMode.get()){chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond*0.5, chassisSpeeds.vyMetersPerSecond*0.5, chassisSpeeds.omegaRadiansPerSecond*0.5);}
+
+        if(slowMode.get()){chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond*0.35, chassisSpeeds.vyMetersPerSecond*0.35, chassisSpeeds.omegaRadiansPerSecond*0.35);}
+        else{chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond*0.9, chassisSpeeds.vyMetersPerSecond*0.9, chassisSpeeds.omegaRadiansPerSecond*0.9);} //temporary slow down
 
         // 5. Convert chassis speeds to individual module states
 
@@ -163,20 +167,24 @@ public class SwerveJoystickCommand extends CommandBase {
         //ARM EXECUTE
         if(manuel.get()) {
             if(rotate0.get()) {
-                armSubsystem.setPivotPosition(0);
+                //armSubsystem.setPivotPosition(0);
                 //armSubsystem.manuelPivot(.3);
             }
             else if(rotate180.get()) {
-                armSubsystem.setPivotPosition(45); //angle to go to 
+                //armSubsystem.setPivotPosition(50); //angle to go to 
                 //armSubsystem.manuelPivot(-.3);
             }
 
             if(extendFull.get()) {
-                armSubsystem.setTelescopePosition(0.1); //percentage (0 to 1)
+                armSubsystem.setTelescopePosition(1000); //percentage (0 to 1)
+                armSubsystem.setPivotPosition(0);
+
                 //armSubsystem.manuelTelescope(.3);
             }
             else if(retract.get()) {
-                armSubsystem.setTelescopePosition(0.9);
+                armSubsystem.setTelescopePosition(88000);
+                armSubsystem.setPivotPosition(50); //angle to go to 
+
                 //armSubsystem.manuelTelescope(-.3);
             }
         }

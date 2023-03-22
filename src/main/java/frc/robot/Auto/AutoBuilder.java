@@ -21,8 +21,10 @@ import frc.robot.Robot.AutoModes;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.commands.Mechanisms.BalanceCommand;
 import frc.robot.commands.Mechanisms.DrivetrainCommand;
 import frc.robot.commands.Mechanisms.TelescopeCommand;
+import frc.robot.subsystems.SwerveSubsystem;
 
 public class AutoBuilder {
     private RobotContainer robotContainer;
@@ -37,6 +39,7 @@ public class AutoBuilder {
         switch (autoMode) {
             case AUTOSIDES:
                 autoSides();
+                break;
             case AUTOCHARGESTATION:
                 autoChargeStation();
                 break;
@@ -90,7 +93,7 @@ public class AutoBuilder {
                 List.of(
                         new Translation2d(0, 0),
                         new Translation2d(1, 0)), //half for some reason
-                new Pose2d(2, 0, new Rotation2d(0)), //half for some reason
+                new Pose2d(2.0, 0, new Rotation2d(0)), //half for some reason
                 trajectoryConfig);
 
         // 3. Define PID controllers for tracking trajectory
@@ -114,18 +117,20 @@ public class AutoBuilder {
         //startPath = new AutoPath(robotContainer.swerveSubsystem, "AUTO1");
         autoCommand.addCommands(
             new SequentialCommandGroup(  
-                new InstantCommand(() -> robotContainer.armSubsystem.setPivotPosition(-45)),
-                new WaitCommand(2.5),
-                new TelescopeCommand(robotContainer.armSubsystem, -.75),
+                
+                new InstantCommand(() -> robotContainer.armSubsystem.setPivotPosition(-53.5)),
+                new WaitCommand(1.5),
+                new TelescopeCommand(robotContainer.armSubsystem, -.9),
                 //new InstantCommand(() -> armSubsystem.setTelescopePosition(0.9)),
-                new WaitCommand(2.5),
+                new WaitCommand(1.5),
                 new InstantCommand((() -> robotContainer.armSubsystem.setGrab(true))),
-                new WaitCommand(1),
+                new WaitCommand(0.5),
                 new InstantCommand(() -> robotContainer.armSubsystem.setPivotPosition(0)),
                 //new InstantCommand(() -> armSubsystem.setTelescopePosition(0.1)),
-                new WaitCommand(2.5),
-                new TelescopeCommand(robotContainer.armSubsystem, .75),
-                new WaitCommand(2.5),
+                new WaitCommand(1.5),
+                new TelescopeCommand(robotContainer.armSubsystem, .9),
+                new WaitCommand(1.5),
+                
                 new InstantCommand(() -> robotContainer.swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
                 swerveControllerCommand,
                 new InstantCommand(() -> robotContainer.swerveSubsystem.stopModules()),
@@ -133,8 +138,10 @@ public class AutoBuilder {
             )
         );
     }
+
     private void autoChargeStation() {
-        SmartDashboard.putString("autonomous", "ChargeStation");
+        SmartDashboard.putString("autonomous", "Sides");
+
         robotContainer.swerveSubsystem.brake(true);
         TrajectoryConfig trajectoryConfig = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -146,8 +153,8 @@ public class AutoBuilder {
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
                         new Translation2d(0, 0),
-                        new Translation2d(0.25, 0)), //half for some reason
-                new Pose2d(0.5, 0, new Rotation2d(0)), //half for some reason
+                        new Translation2d(1, 0)), //half for some reason
+                new Pose2d(1.25, 0, new Rotation2d(0)), //half for some reason
                 trajectoryConfig);
 
         // 3. Define PID controllers for tracking trajectory
@@ -171,40 +178,29 @@ public class AutoBuilder {
         //startPath = new AutoPath(robotContainer.swerveSubsystem, "AUTO1");
         autoCommand.addCommands(
             new SequentialCommandGroup(  
-                new InstantCommand(() -> robotContainer.armSubsystem.setPivotPosition(-45)),
-                new WaitCommand(2.5),
-                new TelescopeCommand(robotContainer.armSubsystem, -.75),
+                
+                /*new InstantCommand(() -> robotContainer.armSubsystem.setPivotPosition(-53.5)),
+                new WaitCommand(1.5),
+                new TelescopeCommand(robotContainer.armSubsystem, -.9),
                 //new InstantCommand(() -> armSubsystem.setTelescopePosition(0.9)),
-                new WaitCommand(2.5),
+                new WaitCommand(1.5),
                 new InstantCommand((() -> robotContainer.armSubsystem.setGrab(true))),
-                new WaitCommand(1),
+                new WaitCommand(0.5),
                 new InstantCommand(() -> robotContainer.armSubsystem.setPivotPosition(0)),
                 //new InstantCommand(() -> armSubsystem.setTelescopePosition(0.1)),
-                new WaitCommand(2.5),
-                new TelescopeCommand(robotContainer.armSubsystem, .75),
-                new WaitCommand(2.5),
+                new WaitCommand(1.5),
+                new TelescopeCommand(robotContainer.armSubsystem, .9),
+                new WaitCommand(1.5) , */
+                
                 new InstantCommand(() -> robotContainer.swerveSubsystem.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))),
                 swerveControllerCommand,
                 new InstantCommand(() -> robotContainer.swerveSubsystem.stopModules()),
-                new WaitCommand(2),
-                new InstantCommand(() -> robotContainer.swerveSubsystem.balance())
+                new WaitCommand(0.25),
+                new BalanceCommand(robotContainer.swerveSubsystem)
+                
             )
         );
     }
-/* 
-    private void blueleft() {
-        startPath = new AutoPath(robotContainer.swerveSubsystem, "BlueLeft");
-        autoCommand.addCommands(
-            new ParallelCommandGroup(
-                //startPath.zeroHeading(),
-                startPath.setBrake(),
-                startPath.odometryReset(),
-                startPath.getAutoPath()
-                //new GrabCommand(robotContainer.armSubsystem, false) this how to add command
-            )
-        );
-    }
-*/
 
 
 }

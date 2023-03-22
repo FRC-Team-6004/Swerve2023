@@ -75,10 +75,10 @@ public class ArmSubsystem extends SubsystemBase {
     pivotPidController.setReference(-1*(angle/360)*MechanismConstants.kReductionPivot, CANSparkMax.ControlType.kPosition);
   }
 
-  public void setTelescopePosition(double percent) { //percent should be 0 to 1
+  public void setTelescopePosition(double position) { //percent should be 0 to 1
       telescope.set(
         ControlMode.Position, 
-        (percent*-300000)
+        (-position)
       );
 
       

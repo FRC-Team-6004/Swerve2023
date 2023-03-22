@@ -93,7 +93,7 @@ public final class Constants {
         public static final double kRotationsToFullExtentTelescope = 8;
         public static final double kReductionPivot = 100 * (56 / 18);
 
-        public static final double kPTelescope = 1;
+        public static final double kPTelescope = 0.5;
         public static final double kITelescope = 0;
         public static final double kDTelescope = 0;
         public static final double kFTelescope = 0;
@@ -103,7 +103,7 @@ public final class Constants {
         public static final int kPIDLoopIdxTelescope = 0;
         public static final int kSlotIdxTelescope = 0;
 
-        public static final double kPPivot = 1;
+        public static final double kPPivot = 4;
         public static final double kIPivot = 0;
         public static final double kDPivot = 0;
         public static final double kMinPivot = -.35;
@@ -117,7 +117,7 @@ public final class Constants {
 
         public static final double kMaxSpeedMetersPerSecond = DriveConstants.kPhysicalMaxSpeedMetersPerSecond;
         public static final double kMaxAngularSpeedRadiansPerSecond = Math.PI * 0.5;
-        public static final double kMaxAccelerationMetersPerSecondSquared = 0.25;
+        public static final double kMaxAccelerationMetersPerSecondSquared = 1.75;
         public static final double kMaxAngularAccelerationRadiansPerSecondSquared = Math.PI / 4;
         public static final double kPXController = 0.75; // multiplier for controller PID control
         public static final double kPYController = 0.75; // multiplier for controller PID control

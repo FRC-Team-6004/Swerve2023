@@ -39,15 +39,13 @@ public class Robot extends TimedRobot {
 
     autoChooser = new SendableChooser<>();
     autoChooser.setDefaultOption("AutoSides", AutoModes.AUTOSIDES);
-    autoChooser.addOption("AutoSides", AutoModes.AUTOSIDES);
+    //autoChooser.addOption("AutoSides", AutoModes.AUTOSIDES);
     autoChooser.addOption("AutoChargeStation", AutoModes.AUTOCHARGESTATION);
+    //autoChooser.setDefaultOption("AutoChargeStation", AutoModes.AUTOCHARGESTATION);
+
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     //previousSelectedAuto = autoChooser.getSelected();
-
-    autoBuilder = new AutoBuilder();
-    autoBuilder.setRobotContainer(m_robotContainer);
-    autoBuilder.setAutoMode(autoChooser.getSelected());
     
   }
 
@@ -77,6 +75,10 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {
+    autoBuilder = new AutoBuilder();
+    autoBuilder.setRobotContainer(m_robotContainer);
+    autoBuilder.setAutoMode(autoChooser.getSelected());
+
     m_autonomousCommand = autoBuilder.build();
     //m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

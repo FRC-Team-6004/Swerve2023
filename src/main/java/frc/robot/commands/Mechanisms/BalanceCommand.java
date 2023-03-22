@@ -7,14 +7,12 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.subsystems.SwerveSubsystem;
 
 public class BalanceCommand extends CommandBase {
-    ChassisSpeeds speed;
     SwerveSubsystem subsystem;
     double angle;
     boolean onChargeStation = false;
     boolean finished = false;
-    public BalanceCommand(SwerveSubsystem swerveSubsystem, ChassisSpeeds chassisSpeeds){
+    public BalanceCommand(SwerveSubsystem swerveSubsystem){
         subsystem = swerveSubsystem;
-        speed = chassisSpeeds;
     }
 
     @Override
@@ -25,6 +23,8 @@ public class BalanceCommand extends CommandBase {
     @Override
     public void execute() {
         angle = subsystem.gyro.getPitch();
+        subsystem.balance();
+        /*
         if(Math.abs(angle) < 2.5 && !onChargeStation){
             SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speed);
             subsystem.setModuleStates(moduleStates);
@@ -38,6 +38,7 @@ public class BalanceCommand extends CommandBase {
             subsystem.balance();
             onChargeStation = true;
         }
+        */
     }
 
     // Called once the command ends or is interrupted.
@@ -50,6 +51,6 @@ public class BalanceCommand extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return finished;
+        return (Math.abs(angle)<2.5);
     }
 }

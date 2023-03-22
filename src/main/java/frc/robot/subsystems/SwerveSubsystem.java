@@ -3,7 +3,7 @@ package frc.robot.subsystems;
 
 import com.kauailabs.navx.frc.AHRS;
 
-//import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonCamera;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -187,6 +187,20 @@ public class SwerveSubsystem extends SubsystemBase {
         }
         
         SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+        setModuleStates(moduleStates);
+    }
+
+    public void move(ChassisSpeeds speed){
+        //ChassisSpeeds chassisSpeeds = new ChassisSpeeds(0, 0, 0);
+        //double angle = gyro.get
+        //double output = MathUtil.clamp(balanceController.calculate(
+        //        gyro.getPitch(), 0),
+        //        -AutoConstants.kRangeBalance, 
+        //        AutoConstants.kRangeBalance
+        //        );
+        //chassisSpeeds.vxMetersPerSecond = output;
+        
+        SwerveModuleState[] moduleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(speed);
         setModuleStates(moduleStates);
     }
     
